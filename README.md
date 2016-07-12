@@ -12,7 +12,7 @@ fi
 ```
 
 ## Usage
-Usage: /Users/207138/bin/m2notes [-dhlqsv] [--getlist] [<note name>] [<note text>]
+Usage: m2notes [-dhlqsv] [--getlist] [<note name>] [<note text>]
 OPTIONS:
   -d:         Deletes <note name>
   -h:         Displays this message
@@ -23,3 +23,40 @@ OPTIONS:
                  /Users/207138/bin/m2notes -s my_note my_other_note
   -v:         Displays version info
   --getlist   Non-pretty list of notes
+
+### Examples
+#### Create note `quick` and open it in your default editor
+```
+m2note quick
+```
+
+#### Create a quick note with named `quick` with text `I am the walrus`
+```
+m2note -q quick I am the walrus
+```
+
+#### Delete note `quick`
+
+```
+m2note -d quick
+```
+
+#### Delete multiple notes
+
+```
+m2note -d quick brown fox
+```
+
+#### List all notes
+```
+m2note -l
+```
+or just
+```
+m2note
+```
+
+#### Show contents of `quick`
+```
+m2note -s quick
+```
