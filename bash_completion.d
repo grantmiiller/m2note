@@ -14,7 +14,7 @@ _notenames()
     prev="${COMP_WORDS[COMP_CWORD-1]}"
 
     # The options to compare the word against to autocomplete
-    opts=$(./m2notes --getlist)
+    opts=$(m2notes --getlist)
 
     COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
     return 0

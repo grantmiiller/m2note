@@ -36,7 +36,7 @@ check_path() {
   # If M2NOTE_PATH variable is NOT set
   if [ -z $M2NOTE_PATH ]; then
     pp 'Please set M2NOTE_PATH, such as: '
-    pp "    export M2NOTE_PATH=$HOME/.m2note"
+    pp "    export M2NOTE_PATH=$HOME/.m2notes"
     exit 1
   fi
 }
