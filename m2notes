@@ -137,9 +137,11 @@ main() {
   # Keep opt local
   local opt
   # syntax is getopts [arguments] [variable to check]
+  # the -: at the end of the getopts string allows long actions (A HACK)
   while getopts ":dhlqs-:" opt
   do
     case "$opt" in
+      # this case path is a hack to allow long options with getopts
       -)
         case "${OPTARG}" in
           getlist)
