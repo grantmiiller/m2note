@@ -1,0 +1,84 @@
+#!/bin/bash
+
+# Extension for easy note finding
+M2NOTE_EXT='.m2'
+
+# Just prints text with a new line before
+# pp stands for padded print
+pp() {
+  echo ''
+  echo $1
+}
+
+# check if the notes path exists
+check_path() {
+  # If M2NOTE_PATH variable is NOT set
+  if [ -z $M2NOTE_PATH ]; then
+    pp 'Please set M2NOTE_PATH, such as: '
+    pp '  export M2NOTE_PATH=$HOME/.m2note'
+  fi
+}
+
+# Create the notes directory
+create_notes_dir() {
+  pp 'Creating notes directory'
+  mkdir $M2NOTE_PATH
+  # if the last command was NOT successful
+  if [ $? -ne 0 ]; then
+    pp 'Could note create notes directory'
+  fi
+}
+
+# Check if the note directory exists, and call create_notes_dir if not
+check_dir() {
+  # If the directory of $M2NOTE_PATH does NOT exist (remove ! to return true if set)
+  if [ ! -d "$M2NOTE_PATH" ]; then
+    create_notes_dir
+  fi
+}
+
+list() {
+  pp 'Current notes are:'
+  echo '===================='
+
+  # Find all entries in M2NOTE_PATH that are a file type and have the M2NOTE_EXT extension
+  local entries=$(find $M2NOTE_PATH -type f -name "*$M2NOTE_EXT")
+  for entry in $entries
+  do
+    # Returns the filename of $entry and stripping off $M2NOTE_EXT
+    basename $entry $M2NOTE_EXT
+  done
+}
+
+usage() {
+  echo 'usage goes here!'
+}
+
+main() {
+  check_path
+  check_dir
+  # Keep opt local
+  local opt
+  # syntax is getopts [arguments] [variable to check]
+  while getopts :l opt
+  do
+    case $opt in
+      l)
+        list
+        shift
+        ;;
+      \?)
+        usage
+        shift
+        ;;
+    esac
+  done
+  # Opens the default editor to filename.txt
+  # "${EDITOR:-vi}" filename.txt
+
+  # Prints the remaining variables
+  # echo "$@"
+}
+
+# Pass all arguments to main
+main "$@"
