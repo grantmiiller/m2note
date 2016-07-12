@@ -3,6 +3,10 @@
 # Extension for easy note finding
 M2NOTE_EXT='.m2'
 
+usage() {
+  echo 'usage goes here!'
+}
+
 # Just prints text with a new line before
 # pp stands for padded print
 pp() {
@@ -15,7 +19,8 @@ check_path() {
   # If M2NOTE_PATH variable is NOT set
   if [ -z $M2NOTE_PATH ]; then
     pp 'Please set M2NOTE_PATH, such as: '
-    pp '  export M2NOTE_PATH=$HOME/.m2note'
+    pp "    export M2NOTE_PATH=$HOME/.m2note"
+    exit 1
   fi
 }
 
@@ -26,6 +31,7 @@ create_notes_dir() {
   # if the last command was NOT successful
   if [ $? -ne 0 ]; then
     pp 'Could note create notes directory'
+    exit 1
   fi
 }
 
@@ -34,6 +40,53 @@ check_dir() {
   # If the directory of $M2NOTE_PATH does NOT exist (remove ! to return true if set)
   if [ ! -d "$M2NOTE_PATH" ]; then
     create_notes_dir
+  fi
+}
+
+# Deletes notes from passed parameters
+delete_notes() {
+  local file
+  local ERROR
+  for file in "$@"; do
+      echo "Deleting $file"
+      ERROR=$(rm $M2NOTE_PATH/$file$M2NOTE_EXT 2>&1 >/dev/null)
+
+      if [ $? -ne 0 ]; then
+        pp 'Could not delete note due to:'
+        echo $ERROR
+      else
+        pp "Successfully deleted: $file"
+      fi
+  done
+}
+
+# Creates a new from passed params
+quick_note() {
+
+  # Check if we have more than 0 arguments passed
+  if [ "$#" -gt 0 ]; then
+    local file=$1
+    shift
+
+    if [ "$#" -gt 0 ]; then
+      echo $@ >> $M2NOTE_PATH/$file$M2NOTE_EXT
+    else
+      touch $M2NOTE_PATH/$file$M2NOTE_EXT
+    fi
+
+    echo "Updated note: $file"
+  else
+    pp 'You must provide a note name'
+    exit 1
+  fi
+}
+
+# Prints out note/notes. Expects params
+show_note() {
+  if [ "$#" -gt 0 ]; then
+    echo 'show note'
+  else
+    pp 'Please provide notes to print'
   fi
 }
 
@@ -50,22 +103,28 @@ list() {
   done
 }
 
-usage() {
-  echo 'usage goes here!'
-}
-
 main() {
   check_path
   check_dir
   # Keep opt local
   local opt
+  local OPT_FLAG_D=0
   # syntax is getopts [arguments] [variable to check]
-  while getopts :l opt
+  while getopts :l:d:q opt
   do
     case $opt in
       l)
         list
+        exit 0
+        ;;
+      d)
+        OPT_FLAG_D=1
         shift
+        ;;
+      q)
+        shift
+        quick_note $@
+        exit 0
         ;;
       \?)
         usage
@@ -73,11 +132,21 @@ main() {
         ;;
     esac
   done
-  # Opens the default editor to filename.txt
-  # "${EDITOR:-vi}" filename.txt
 
-  # Prints the remaining variables
-  # echo "$@"
+  if [ "$#" -eq 0 ]; then
+    list
+    exit 0
+  fi
+
+  if [ "$OPT_FLAG_D" -eq 1 ]; then
+    delete_notes $@
+    exit 0
+  fi
+
+  if [ "$#" -eq 1 ]; then
+    "${EDITOR:-vi}" $M2NOTE_PATH/$1$M2NOTE_EXT
+    exit 0
+  fi
 }
 
 # Pass all arguments to main
