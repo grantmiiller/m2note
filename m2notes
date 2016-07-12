@@ -48,21 +48,20 @@ delete_notes() {
   local file
   local ERROR
   for file in "$@"; do
-      echo "Deleting $file"
-      ERROR=$(rm $M2NOTE_PATH/$file$M2NOTE_EXT 2>&1 >/dev/null)
+    echo "Deleting $file"
+    ERROR=$(rm $M2NOTE_PATH/$file$M2NOTE_EXT 2>&1 >/dev/null)
 
-      if [ $? -ne 0 ]; then
-        pp 'Could not delete note due to:'
-        echo $ERROR
-      else
-        pp "Successfully deleted: $file"
-      fi
+    if [ $? -ne 0 ]; then
+      pp 'Could not delete note due to:'
+      echo $ERROR
+    else
+      pp "Successfully deleted: $file"
+    fi
   done
 }
 
 # Creates a new from passed params
 quick_note() {
-
   # Check if we have more than 0 arguments passed
   if [ "$#" -gt 0 ]; then
     local file=$1
@@ -82,9 +81,25 @@ quick_note() {
 }
 
 # Prints out note/notes. Expects params
-show_note() {
+show_notes() {
   if [ "$#" -gt 0 ]; then
-    echo 'show note'
+    local file
+    local complete_file
+    for file in "$@"; do
+      complete_file=$M2NOTE_PATH/$file$M2NOTE_EXT
+
+      if [ -f $complete_file ]; then
+        pp "DISPLAY NOTE: $file"
+        echo '================================='
+        # Less file if huge, else make it behave like cat
+        less -FX $complete_file
+        echo '================================='
+        echo ''
+      else
+         echo "Note `$file` does not exist"
+      fi
+
+    done
   else
     pp 'Please provide notes to print'
   fi
@@ -108,38 +123,42 @@ main() {
   check_dir
   # Keep opt local
   local opt
-  local OPT_FLAG_D=0
   # syntax is getopts [arguments] [variable to check]
-  while getopts :l:d:q opt
+  while getopts :d:h:l:q:s opt
   do
     case $opt in
+      d)
+        shift
+        delete_notes $@
+        exit 0
+        ;;
+      h)
+        usage
+        exit 0
+        ;;
       l)
         list
         exit 0
-        ;;
-      d)
-        OPT_FLAG_D=1
-        shift
         ;;
       q)
         shift
         quick_note $@
         exit 0
         ;;
+      s)
+        shift
+        show_notes $@
+        exit 0
+        ;;
       \?)
         usage
-        shift
+        exit 1
         ;;
     esac
   done
 
   if [ "$#" -eq 0 ]; then
     list
-    exit 0
-  fi
-
-  if [ "$OPT_FLAG_D" -eq 1 ]; then
-    delete_notes $@
     exit 0
   fi
 
