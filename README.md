@@ -2,7 +2,9 @@ Notes, yo
 
 ## Setup
 First add `M2NOTE_PATH` do your bash profile. For example:
-`export M2NOTE_PATH=$HOME/.m2notes`
+```
+export M2NOTE_PATH=$HOME/.m2notes
+```
 
 If you want autocomplete, you will also have to reference the file as well. For example:
 ```
