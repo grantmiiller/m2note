@@ -137,9 +137,22 @@ main() {
   # Keep opt local
   local opt
   # syntax is getopts [arguments] [variable to check]
-  while getopts ":dhlqs" opt
+  while getopts ":dhlqs-:" opt
   do
     case "$opt" in
+      -)
+        case "${OPTARG}" in
+          getlist)
+            get_list
+            exit 0
+            ;;
+          *)
+            if [ "$OPTERR" = 1 ] && [ "${optspec:0:1}" != ":" ]; then
+                echo "Unknown option --${OPTARG}" >&2
+            fi
+            exit 1
+            ;;
+        esac;;
       d)
         shift
         delete_notes $@
@@ -176,6 +189,7 @@ main() {
   fi
 
   if [ "$#" -eq 1 ]; then
+
     "${EDITOR:-vi}" $M2NOTE_PATH/$1$M2NOTE_EXT
     exit 0
   fi
