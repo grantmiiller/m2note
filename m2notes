@@ -105,17 +105,30 @@ show_notes() {
   fi
 }
 
-list() {
+print_list() {
+  local the_list=$(get_list)
   pp 'Current notes are:'
   echo '===================='
 
   # Find all entries in M2NOTE_PATH that are a file type and have the M2NOTE_EXT extension
+  for entry in $the_list
+  do
+    # Returns the filename of $entry and stripping off $M2NOTE_EXT
+    echo $entry
+  done
+}
+
+get_list() {
+
+  # Find all entries in M2NOTE_PATH that are a file type and have the M2NOTE_EXT extension
   local entries=$(find $M2NOTE_PATH -type f -name "*$M2NOTE_EXT")
+  local the_list
   for entry in $entries
   do
     # Returns the filename of $entry and stripping off $M2NOTE_EXT
-    basename $entry $M2NOTE_EXT
+    the_list="${the_list} $(basename $entry $M2NOTE_EXT)"
   done
+  echo -e "${the_list}" | sed -e 's/^[[:space:]]*//'
 }
 
 main() {
@@ -124,9 +137,9 @@ main() {
   # Keep opt local
   local opt
   # syntax is getopts [arguments] [variable to check]
-  while getopts :d:h:l:q:s opt
+  while getopts ":dhlqs" opt
   do
-    case $opt in
+    case "$opt" in
       d)
         shift
         delete_notes $@
@@ -137,7 +150,7 @@ main() {
         exit 0
         ;;
       l)
-        list
+        print_list
         exit 0
         ;;
       q)
@@ -158,7 +171,7 @@ main() {
   done
 
   if [ "$#" -eq 0 ]; then
-    list
+    print_list
     exit 0
   fi
 
