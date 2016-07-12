@@ -14,7 +14,9 @@ fi
 ```
 
 ## Usage
-Usage: m2notes [-dhlqsv] [--getlist] [<note name>] [<note text>]
+```
+Usage: m2notes [-dhlqsv] [--getlist] [note name] [note text]
+
 OPTIONS:
   -d:         Deletes <note name>
   -h:         Displays this message
@@ -25,6 +27,7 @@ OPTIONS:
                  /Users/207138/bin/m2notes -s my_note my_other_note
   -v:         Displays version info
   --getlist   Non-pretty list of notes
+```
 
 ### Examples
 #### Create note `quick` and open it in your default editor
