@@ -122,10 +122,6 @@ show_notes() {
   fi
 }
 
-open_from_list() {
-
-}
-
 print_list() {
   # Get the list from get_list and pretty print it
   local the_list=$(get_list)
