@@ -20,7 +20,7 @@ usage() {
 
 version() {
   echo "AUTHOR:   Grant Miiller, grant@m2iller.com"
-  echo "VERSION:  2.2.0"
+  echo "VERSION:  2.3.0"
   echo "CREATED:  July 12, 2016"
 }
 

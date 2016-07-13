@@ -26,22 +26,22 @@ m2note_ideas
 
 ## Usage
 ```
-Usage: m2notes [-dhlqsv] [--getlist] [note name] [note text]
+Usage: m2notes [-dehlosv] [--getlist] [note name] [note text]
 
 OPTIONS:
   -d:         Deletes <note name>
+  -e:         Opens note in the defined by the $EDITOR env variable
   -h:         Displays this message
   -l:         Lists saved notes. Default command
-  -q:         A quick note. For example:
-                 /Users/207138/bin/m2notes -q my_note my note contents
-  -s:         Shows contents of <note name>. For example:
-                 /Users/207138/bin/m2notes -s my_note my_other_note
+  -o:         Shows a list of notes to open
+  -s:         Shows contents of <note name> or shows list if no note is specified. For example:
+                 /Users/207138/bin/m2note -s my_note my_other_note
   -v:         Displays version info
   --getlist   Non-pretty list of notes
 ```
 
 ### Examples
-#### Open a note named `quick` in your default editor 
+#### Open a note named `quick` in your default editor
 ```
 m2note -e quick
 ```
