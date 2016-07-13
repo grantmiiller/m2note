@@ -5,13 +5,14 @@ M2NOTE_EXT='.m2'
 PROGRAM_NAME=$0
 
 usage() {
-  pp "Usage: ${PROGRAM_NAME} [-dhlqsv] [--getlist] [<note name>] [<note text>]"
+  pp "Usage: ${PROGRAM_NAME} [-dhlosv] [--getlist] [<note name>] [<note text>]"
   echo "OPTIONS: "
   echo "  -d:         Deletes <note name>"
   echo "  -e:         Opens note in the defined by the \$EDITOR env variable"
   echo "  -h:         Displays this message"
   echo "  -l:         Lists saved notes. Default command"
-  echo "  -s:         Shows contents of <note name>. For example: "
+  echo "  -o:         Shows a list of notes to open"
+  echo "  -s:         Shows contents of <note name> or shows list if no note is specified. For example: "
   echo "                 ${PROGRAM_NAME} -s my_note my_other_note"
   echo "  -v:         Displays version info"
   echo "  --getlist   Non-pretty list of notes"
@@ -259,7 +260,7 @@ main() {
   local opt
   # syntax is getopts [arguments] [variable to check]
   # the -: at the end of the getopts string allows long actions (A HACK)
-  while getopts ":dehloqsv-:" opt
+  while getopts ":dehlosv-:" opt
   do
     case "$opt" in
       # this case path is a hack to allow long options with getopts
