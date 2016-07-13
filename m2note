@@ -7,7 +7,7 @@ PROGRAM_NAME=$0
 usage() {
   pp "Usage: ${PROGRAM_NAME} [-dhlosv] [--getlist] [<note name>] [<note text>]"
   echo "OPTIONS: "
-  echo "  -d:         Deletes <note name>"
+  echo "  -d:         Deletes <note name> or displays a list if no note is specificied"
   echo "  -e:         Opens note in the defined by the \$EDITOR env variable"
   echo "  -h:         Displays this message"
   echo "  -l:         Lists saved notes. Default command"
@@ -64,17 +64,23 @@ check_dir() {
 delete_notes() {
   local file
   local ERROR
-  for file in "$@"; do
-    echo "Deleting ${file}"
-    ERROR=$(rm $M2NOTE_PATH/$file$M2NOTE_EXT 2>&1 >/dev/null)
+  if [ "$#" -gt 0 ]; then
+    for file in "$@"; do
+      echo "Deleting ${file}"
+      ERROR=$(rm $M2NOTE_PATH/$file$M2NOTE_EXT 2>&1 >/dev/null)
 
-    if [ $? -ne 0 ]; then
-      pp 'Could not delete note due to:'
-      echo $ERROR
-    else
-      pp "Successfully deleted: ${file}"
-    fi
-  done
+      if [ $? -ne 0 ]; then
+        pp 'Could not delete note due to:'
+        echo $ERROR
+      else
+        pp "Successfully deleted: ${file}"
+      fi
+    done
+  else
+    print_num_list
+    echo ''
+    select_note "delete"
+  fi
 }
 
 # Creates a new from passed params
@@ -200,6 +206,9 @@ execute_command_from_list() {
   local note=$2
 
   case "${finish_cmd}" in
+    delete)
+      delete_notes "${note}"
+      ;;
     open)
       echo "Opening ${note}"
       open_in_editor "${note}"
@@ -227,7 +236,7 @@ print_list() {
   echo '===================='
 
   # Check if we have notes
-  if [ -z $the_list ]; then
+  if [ -z "${the_list}" ]; then
     echo '<no notes to show>'
   fi
 
@@ -244,7 +253,7 @@ get_list() {
   for entry in $entries
   do
     # Returns the filename of $entry and stripping off $M2NOTE_EXT
-    the_list="${the_list} $(basename $entry $M2NOTE_EXT)"
+    the_list="${the_list} $(basename ${entry} ${M2NOTE_EXT})"
   done
   echo -e "${the_list}" | sed -e 's/^[[:space:]]*//'
 }
