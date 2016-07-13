@@ -13,6 +13,17 @@ if [ -f /path/to/bash_completion.d ]; then
 fi
 ```
 
+Also, if you would like to alias m2note but still have autocomplete, just set `M2NOTE_ALIAS`
+```
+$ alias note=m2note
+$ export M2NOTE_ALIAS=note
+$ note -l
+
+Current notes are:
+====================
+m2note_ideas
+```
+
 ## Usage
 ```
 Usage: m2notes [-dhlqsv] [--getlist] [note name] [note text]
