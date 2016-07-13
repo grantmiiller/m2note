@@ -113,7 +113,7 @@ show_notes() {
         echo '================================='
         echo ''
       else
-         echo "Note `$file` does not exist"
+         echo "Note ${file} does not exist"
       fi
 
     done
