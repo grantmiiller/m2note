@@ -8,10 +8,9 @@ usage() {
   pp "Usage: ${PROGRAM_NAME} [-dhlqsv] [--getlist] [<note name>] [<note text>]"
   echo "OPTIONS: "
   echo "  -d:         Deletes <note name>"
+  echo "  -e:         Opens note in the defined by the \$EDITOR env variable"
   echo "  -h:         Displays this message"
   echo "  -l:         Lists saved notes. Default command"
-  echo "  -q:         A quick note. For example: "
-  echo "                 ${PROGRAM_NAME} -q my_note my note contents"
   echo "  -s:         Shows contents of <note name>. For example: "
   echo "                 ${PROGRAM_NAME} -s my_note my_other_note"
   echo "  -v:         Displays version info"
@@ -86,11 +85,12 @@ quick_note() {
 
     if [ "$#" -gt 0 ]; then
       echo $@ >> $M2NOTE_PATH/$file$M2NOTE_EXT
+      echo "Updated note: ${file}"
     else
       touch $M2NOTE_PATH/$file$M2NOTE_EXT
+      echo "Touched note: ${file}"
     fi
 
-    echo "Updated note: ${file}"
   else
     pp 'You must provide a note name'
     exit 1
@@ -146,6 +146,14 @@ get_list() {
   echo -e "${the_list}" | sed -e 's/^[[:space:]]*//'
 }
 
+open_in_editor() {
+  if [ "$#" -gt 0 ]; then
+    # Only open the first thing because damnit one note at a time
+    "${EDITOR:-vi}" $M2NOTE_PATH/$1$M2NOTE_EXT
+    exit 0
+  fi
+}
+
 main() {
   check_path
   check_dir
@@ -153,7 +161,7 @@ main() {
   local opt
   # syntax is getopts [arguments] [variable to check]
   # the -: at the end of the getopts string allows long actions (A HACK)
-  while getopts ":dhlqsv-:" opt
+  while getopts ":dehlqsv-:" opt
   do
     case "$opt" in
       # this case path is a hack to allow long options with getopts
@@ -175,17 +183,17 @@ main() {
         delete_notes $@
         exit 0
         ;;
+      e)
+        shift
+        open_in_editor $@
+        exit 0
+        ;;
       h)
         usage
         exit 0
         ;;
       l)
         print_list
-        exit 0
-        ;;
-      q)
-        shift
-        quick_note $@
         exit 0
         ;;
       s)
@@ -209,9 +217,8 @@ main() {
     exit 0
   fi
 
-  if [ "$#" -eq 1 ]; then
-
-    "${EDITOR:-vi}" $M2NOTE_PATH/$1$M2NOTE_EXT
+  if [ "$#" -gt 0 ]; then
+    quick_note $@
     exit 0
   fi
 }

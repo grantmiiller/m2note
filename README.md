@@ -41,14 +41,14 @@ OPTIONS:
 ```
 
 ### Examples
-#### Create note `quick` and open it in your default editor
+#### Open a note named `quick` in your default editor 
 ```
-m2note quick
+m2note -e quick
 ```
 
 #### Create a quick note with named `quick` with text `I am the walrus`
 ```
-m2note -q quick I am the walrus
+m2note quick I am the walrus
 ```
 
 #### Delete note `quick`
