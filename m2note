@@ -221,6 +221,11 @@ print_list() {
   pp 'Current notes are:'
   echo '===================='
 
+  # Check if we have notes
+  if [ -z $the_list ]; then
+    echo '<no notes to show>'
+  fi
+
   for entry in $the_list
   do
     echo $entry
