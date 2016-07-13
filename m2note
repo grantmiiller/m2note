@@ -122,6 +122,65 @@ show_notes() {
   fi
 }
 
+open_from_list() {
+  local the_list=($(get_list))
+  local list_count=${#the_list[@]}
+  local idx=0
+  local user_num
+
+  if [ "${list_count}" -eq 0 ]; then
+    echo "There are no saved notes"
+    exit 0
+  fi
+
+  pp 'Current notes are:'
+  echo '===================='
+
+  while [ "${idx}" -lt "${list_count}" ]; do
+    echo "${idx}. ${the_list[$idx]}"
+    ((idx++))
+  done
+  
+  echo ''
+
+  local valid_input=0
+  local attempts=0
+
+  # regular expression to check if input is number
+  local re='^[0-9]+$'
+
+  while [ "${valid_input}" -eq 0 ]; do
+
+    # If a user has tried too many times, give up
+    if [ "${attempts}" -ge 3 ]; then
+      echo "Giving up, you make me sad"
+      exit 1
+    fi
+    ((attempts++))
+
+    echo "Enter the note number, followed by [ENTER]. Or enter [q] to exit:"
+    read user_num
+    echo ''
+
+    if ! [[ $user_num =~ $re ]] ; then
+      if [ "${user_num}" = "q" ]; then
+        echo "Exiting..."
+        exit 0
+      else
+        echo "Only numbers or [q] are valid inputs."
+      fi
+    else
+      if [ "${user_num}" -lt "${list_count}" ]; then
+        echo "Opening ${the_list[$user_num]}"
+        open_in_editor "${the_list[$user_num]}"
+        valid_input=1
+      else
+        echo "There is no note matching the number"
+      fi
+    fi
+  done
+}
+
 print_list() {
   # Get the list from get_list and pretty print it
   local the_list=$(get_list)
@@ -161,7 +220,7 @@ main() {
   local opt
   # syntax is getopts [arguments] [variable to check]
   # the -: at the end of the getopts string allows long actions (A HACK)
-  while getopts ":dehlqsv-:" opt
+  while getopts ":dehloqsv-:" opt
   do
     case "$opt" in
       # this case path is a hack to allow long options with getopts
@@ -194,6 +253,10 @@ main() {
         ;;
       l)
         print_list
+        exit 0
+        ;;
+      o)
+        open_from_list
         exit 0
         ;;
       s)
