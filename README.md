@@ -29,7 +29,7 @@ m2note_ideas
 Usage: m2notes [-dehlosv] [--getlist] [note name] [note text]
 
 OPTIONS:
-  -d:         Deletes <note name>
+  -d:         Deletes <note name> or displays a list if no note is specificied
   -e:         Opens note in the defined by the $EDITOR env variable
   -h:         Displays this message
   -l:         Lists saved notes. Default command

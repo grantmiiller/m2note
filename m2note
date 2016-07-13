@@ -7,7 +7,7 @@ PROGRAM_NAME=$0
 usage() {
   pp "Usage: ${PROGRAM_NAME} [-dhlosv] [--getlist] [<note name>] [<note text>]"
   echo "OPTIONS: "
-  echo "  -d:         Deletes <note name> or displays a list if no note is specificied"
+  echo "  -d:         Deletes <note name> or displays a list if no note is specified"
   echo "  -e:         Opens note in the defined by the \$EDITOR env variable"
   echo "  -h:         Displays this message"
   echo "  -l:         Lists saved notes. Default command"
