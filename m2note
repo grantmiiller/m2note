@@ -5,15 +5,15 @@ M2NOTE_EXT='.m2'
 PROGRAM_NAME=$0
 
 usage() {
-  pp "Usage: $PROGRAM_NAME [-dhlqsv] [--getlist] [<note name>] [<note text>]"
+  pp "Usage: ${PROGRAM_NAME} [-dhlqsv] [--getlist] [<note name>] [<note text>]"
   echo "OPTIONS: "
   echo "  -d:         Deletes <note name>"
   echo "  -h:         Displays this message"
   echo "  -l:         Lists saved notes. Default command"
   echo "  -q:         A quick note. For example: "
-  echo "                 $PROGRAM_NAME -q my_note my note contents"
+  echo "                 ${PROGRAM_NAME} -q my_note my note contents"
   echo "  -s:         Shows contents of <note name>. For example: "
-  echo "                 $PROGRAM_NAME -s my_note my_other_note"
+  echo "                 ${PROGRAM_NAME} -s my_note my_other_note"
   echo "  -v:         Displays version info"
   echo "  --getlist   Non-pretty list of notes"
 }
@@ -36,7 +36,7 @@ check_path() {
   # If M2NOTE_PATH variable is NOT set
   if [ -z $M2NOTE_PATH ]; then
     pp 'Please set M2NOTE_PATH, such as: '
-    pp "    export M2NOTE_PATH=$HOME/.m2notes"
+    pp "    export M2NOTE_PATH=${HOME}/.m2notes"
     exit 1
   fi
 }
@@ -55,7 +55,7 @@ create_notes_dir() {
 # Check if the note directory exists, and call create_notes_dir if not
 check_dir() {
   # If the directory of $M2NOTE_PATH does NOT exist (remove ! to return true if set)
-  if [ ! -d "$M2NOTE_PATH" ]; then
+  if [ ! -d "${M2NOTE_PATH}" ]; then
     create_notes_dir
   fi
 }
@@ -65,14 +65,14 @@ delete_notes() {
   local file
   local ERROR
   for file in "$@"; do
-    echo "Deleting $file"
+    echo "Deleting ${file}"
     ERROR=$(rm $M2NOTE_PATH/$file$M2NOTE_EXT 2>&1 >/dev/null)
 
     if [ $? -ne 0 ]; then
       pp 'Could not delete note due to:'
       echo $ERROR
     else
-      pp "Successfully deleted: $file"
+      pp "Successfully deleted: ${file}"
     fi
   done
 }
@@ -90,7 +90,7 @@ quick_note() {
       touch $M2NOTE_PATH/$file$M2NOTE_EXT
     fi
 
-    echo "Updated note: $file"
+    echo "Updated note: ${file}"
   else
     pp 'You must provide a note name'
     exit 1
@@ -106,7 +106,7 @@ show_notes() {
       complete_file=$M2NOTE_PATH/$file$M2NOTE_EXT
 
       if [ -f $complete_file ]; then
-        pp "DISPLAY NOTE: $file"
+        pp "DISPLAY NOTE: ${file}"
         echo '================================='
         # Less file if huge, else make it behave like cat
         less -FX $complete_file
