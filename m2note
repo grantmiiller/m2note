@@ -19,7 +19,7 @@ usage() {
 
 version() {
   echo "AUTHOR:   Grant Miiller, grant@m2iller.com"
-  echo "VERSION:  2.0.0"
+  echo "VERSION:  2.1.0"
   echo "CREATED:  July 12, 2016"
 }
 
@@ -140,7 +140,7 @@ open_from_list() {
     echo "${idx}. ${the_list[$idx]}"
     ((idx++))
   done
-  
+
   echo ''
 
   local valid_input=0
