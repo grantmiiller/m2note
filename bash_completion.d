@@ -21,3 +21,7 @@ _notenames()
 }
 
 complete -F _notenames m2note
+
+if [ -z $M2NOTE_ALIAS ]; then
+  complete -F _notenames $M2NOTE_ALIAS
+fi
