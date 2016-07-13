@@ -118,11 +118,12 @@ show_notes() {
 
     done
   else
-    pp 'Please provide notes to print'
+    echo 'No'
   fi
 }
 
-open_from_list() {
+# Prints a list of notes in a number format
+print_num_list() {
   local the_list=($(get_list))
   local list_count=${#the_list[@]}
   local idx=0
@@ -136,15 +137,26 @@ open_from_list() {
   pp 'Current notes are:'
   echo '===================='
 
+  # Looping through array of notes
   while [ "${idx}" -lt "${list_count}" ]; do
     echo "${idx}. ${the_list[$idx]}"
     ((idx++))
   done
+}
 
-  echo ''
-
+# Gets a note number from a user
+select_note() {
+  local finish_cmd=$1
+  local the_list=($(get_list))
+  local list_count=${#the_list[@]}
   local valid_input=0
   local attempts=0
+
+  # Exit if no notes
+  if [ "${list_count}" -eq 0 ]; then
+    echo "There are no saved notes"
+    exit 0
+  fi
 
   # regular expression to check if input is number
   local re='^[0-9]+$'
@@ -171,14 +183,36 @@ open_from_list() {
       fi
     else
       if [ "${user_num}" -lt "${list_count}" ]; then
-        echo "Opening ${the_list[$user_num]}"
-        open_in_editor "${the_list[$user_num]}"
+        execute_command_from_list ${finish_cmd} ${the_list[$user_num]}
         valid_input=1
       else
         echo "There is no note matching the number"
       fi
     fi
   done
+}
+
+execute_command_from_list() {
+  local finish_cmd=$1
+  local note=$2
+
+  case "${finish_cmd}" in
+    open)
+      echo "Opening ${note}"
+      open_in_editor "${note}"
+      ;;
+    *)
+      echo 'Unrecognized command'
+      exit 1
+      ;;
+  esac
+}
+
+open_from_list() {
+  print_num_list
+  echo ''
+  select_note "open"
+
 }
 
 print_list() {
